@@ -1,0 +1,23 @@
+# macOS
+.DS_Store
+
+# Angular
+frontend/node_modules/
+frontend/dist/
+frontend/.angular/
+
+# Spring Boot / Java
+backend/**/target/
+
+# IntelliJ
+.idea/
+*.iml
+
+# VS Code
+.vscode/
+
+# Environment / secrets
+.env
+.env.*
+application-local.yml
+application-local.properties

@@ -1,0 +1,45 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: interview-os-api
+
+  datasource:
+    url: jdbc:postgresql://localhost:5432/interviewos
+    username: ${DB_USERNAME:postgres}
+    password: ${DB_PASSWORD:0000}
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    open-in-view: false
+    properties:
+      hibernate:
+        format_sql: true
+
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: ${GOOGLE_CLIENT_ID}
+            client-secret: ${GOOGLE_CLIENT_SECRET}
+            scope:
+              - openid
+              - email
+              - profile
+              - https://www.googleapis.com/auth/calendar.readonly
+            redirect-uri: "{baseUrl}/login/oauth2/code/{registrationId}"
+
+
+
+app:
+  frontend:
+    # Angular dev server. Used for CORS and for the post-login redirect.
+    base-url: ${FRONTEND_BASE_URL:http://localhost:4200}
+    default-redirect-path: /dashboard
+
+logging:
+  level:
+    org.springframework.security: INFO
