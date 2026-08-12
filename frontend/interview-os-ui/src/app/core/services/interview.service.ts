@@ -1,22 +1,36 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
-import { catchError } from 'rxjs/operators';
+import { catchError, map } from 'rxjs/operators';
+
 import { environment } from '../../../environments/environment';
-import { DashboardStats, EMPTY_STATS, Interview } from '../../shared/models/interview.model';
+import {
+  DashboardStats,
+  EMPTY_STATS,
+  Interview
+} from '../../shared/models/interview.model';
 
 @Injectable({ providedIn: 'root' })
 export class InterviewService {
+
   private readonly http = inject(HttpClient);
-  private readonly base = `${environment.apiBaseUrl}/api/interviews`;
+
+  private readonly base =
+    `${environment.apiBaseUrl}/api/calendar`;
 
   upcoming(): Observable<Interview[]> {
-    return this.http.get<Interview[]>(`${this.base}/upcoming`).pipe(catchError(() => of([])));
-  }
+  return this.http.get<Interview[]>(
+    `${this.base}/upcoming`
+  );
+}
 
   stats(): Observable<DashboardStats> {
     return this.http
-      .get<DashboardStats>(`${this.base}/stats`)
-      .pipe(catchError(() => of(EMPTY_STATS)));
+      .get<DashboardStats>(
+        `${environment.apiBaseUrl}/api/interviews/stats`
+      )
+      .pipe(
+        catchError(() => of(EMPTY_STATS))
+      );
   }
 }

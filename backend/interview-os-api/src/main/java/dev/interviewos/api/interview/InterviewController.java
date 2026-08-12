@@ -1,10 +1,11 @@
 package dev.interviewos.api.interview;
 
-import dev.interviewos.api.interview.InterviewDtos.DashboardStats;
-import dev.interviewos.api.interview.InterviewDtos.InterviewResponse;
+import dev.interviewos.api.calendar.CalendarInterviewResponse;
+import dev.interviewos.api.calendar.GoogleCalendarService;
 import dev.interviewos.api.user.AppUser;
 import dev.interviewos.api.user.UserService;
 import java.util.List;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.core.user.OAuth2User;
@@ -18,30 +19,54 @@ import org.springframework.http.HttpStatus;
 @RequestMapping("/api/interviews")
 public class InterviewController {
 
-    private final InterviewService interviews;
+    private final GoogleCalendarService calendarService;
     private final UserService users;
 
-    public InterviewController(InterviewService interviews, UserService users) {
-        this.interviews = interviews;
+    public InterviewController(
+            GoogleCalendarService calendarService,
+            UserService users) {
+
+        this.calendarService = calendarService;
         this.users = users;
     }
 
     @GetMapping("/upcoming")
-    public ResponseEntity<List<InterviewResponse>> upcoming(
-        @AuthenticationPrincipal OAuth2User principal) {
-        return ResponseEntity.ok(interviews.upcoming(currentUser(principal).getId()));
-    }
+    public ResponseEntity<List<CalendarInterviewResponse>> upcoming(
+            @AuthenticationPrincipal OAuth2User principal) {
 
-    @GetMapping("/stats")
-    public ResponseEntity<DashboardStats> stats(@AuthenticationPrincipal OAuth2User principal) {
-        return ResponseEntity.ok(interviews.stats(currentUser(principal).getId()));
+        AppUser user = currentUser(principal);
+
+        try {
+            return ResponseEntity.ok(
+                    calendarService.getUpcomingInterviewEvents(user)
+            );
+        } catch (Exception e) {
+            e.printStackTrace();
+
+            throw new ResponseStatusException(
+                    HttpStatus.INTERNAL_SERVER_ERROR,
+                    "Unable to fetch Google Calendar events",
+                    e
+            );
+        }
     }
 
     private AppUser currentUser(OAuth2User principal) {
+
         if (principal == null) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
+            throw new ResponseStatusException(
+                    HttpStatus.UNAUTHORIZED
+            );
         }
-        return users.findByGoogleId((String) principal.getAttributes().get("sub"))
-            .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED));
+
+        String googleId =
+                (String) principal.getAttributes().get("sub");
+
+        return users.findByGoogleId(googleId)
+                .orElseThrow(() ->
+                        new ResponseStatusException(
+                                HttpStatus.UNAUTHORIZED
+                        )
+                );
     }
 }

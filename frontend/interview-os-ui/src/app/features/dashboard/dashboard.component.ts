@@ -4,7 +4,8 @@ import { InterviewService } from '../../core/services/interview.service';
 import { DashboardStats, EMPTY_STATS, Interview } from '../../shared/models/interview.model';
 import { StatCardComponent } from '../../shared/components/stat-card.component';
 import { DashboardHeaderComponent } from './dashboard-header.component';
-import { UpcomingInterviewsComponent } from './upcoming-interviews.component';
+import { UpcomingInterviewsComponent } from '../dashboard/upcoming-interviews.component';
+
 
 @Component({
   selector: 'app-dashboard',
@@ -49,7 +50,11 @@ export class DashboardComponent {
 
   constructor() {
     this.service.stats().subscribe((s) => this.stats.set(s));
-    this.service.upcoming().subscribe((i) => this.interviews.set(i));
+
+    this.service.upcoming().subscribe({
+      next: (items) => this.interviews.set(items),
+      error: () => this.interviews.set([]),
+    });
   }
 
   private static greetingFor(hour: number): string {

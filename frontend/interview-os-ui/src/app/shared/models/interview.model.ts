@@ -1,10 +1,10 @@
 export interface Interview {
   id: string;
-  company: string;
-  role: string;
-  startsAt: string;
-  stage: string;
-  prepared: boolean;
+  title: string | null;
+  description: string | null;
+  startTime: string | null;
+  endTime: string | null;
+  link: string | null;
 }
 
 export interface DashboardStats {
@@ -13,4 +13,8 @@ export interface DashboardStats {
   prepared: number;
 }
 
-export const EMPTY_STATS: DashboardStats = { upcoming: 0, thisWeek: 0, prepared: 0 };
+export const EMPTY_STATS: DashboardStats = {
+  upcoming: 0,
+  thisWeek: 0,
+  prepared: 0
+};

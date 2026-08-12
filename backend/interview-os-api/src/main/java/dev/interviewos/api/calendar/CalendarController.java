@@ -51,4 +51,31 @@ public class CalendarController {
                     ));
         }
     }
+
+    @GetMapping("/upcoming")
+    public ResponseEntity<?> getUpcomingInterviews(
+            Principal principal) {
+
+        try {
+            AppUser user = userRepository
+                    .findByGoogleId(principal.getName())
+                    .orElseThrow(() ->
+                            new IllegalStateException(
+                                    "InterviewOS user not found"
+                            ));
+
+            return ResponseEntity.ok(
+                    calendarService.getUpcomingInterviewEvents(user)
+            );
+
+        } catch (Exception e) {
+
+            return ResponseEntity
+                    .internalServerError()
+                    .body(Map.of(
+                            "error",
+                            e.getMessage()
+                    ));
+        }
+    }
 }
