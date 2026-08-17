@@ -98,7 +98,7 @@ public class GoogleCalendarService {
         return result;
     }
 
-    Events getUpcomingEvents(AppUser user) throws Exception {
+    public Events getUpcomingEvents(AppUser user) throws Exception {
 
         GoogleCalendarConnection connection =
                 connectionRepository

@@ -14,6 +14,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.http.HttpStatus;
+import com.google.api.services.calendar.model.Events;
+import dev.interviewos.api.calendar.GoogleCalendarService;
+import dev.interviewos.api.interview.InterviewDtos.InterviewResponse;
+
+import java.time.Instant;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/interviews")
@@ -31,24 +37,50 @@ public class InterviewController {
     }
 
     @GetMapping("/upcoming")
-    public ResponseEntity<List<CalendarInterviewResponse>> upcoming(
-            @AuthenticationPrincipal OAuth2User principal) {
+    public ResponseEntity<List<InterviewResponse>> upcoming(
+            @AuthenticationPrincipal OAuth2User principal) throws Exception {
 
         AppUser user = currentUser(principal);
 
-        try {
-            return ResponseEntity.ok(
-                    calendarService.getUpcomingInterviewEvents(user)
-            );
-        } catch (Exception e) {
-            e.printStackTrace();
+        Events events = calendarService.getUpcomingEvents(user);
 
-            throw new ResponseStatusException(
-                    HttpStatus.INTERNAL_SERVER_ERROR,
-                    "Unable to fetch Google Calendar events",
-                    e
-            );
-        }
+        List<InterviewResponse> response = events.getItems()
+                .stream()
+                .map(event -> {
+
+                    String startsAt = null;
+
+                    if (event.getStart() != null) {
+
+                        if (event.getStart().getDateTime() != null) {
+                            startsAt = Instant.ofEpochMilli(
+                                    event.getStart()
+                                            .getDateTime()
+                                            .getValue()
+                            ).toString();
+
+                        } else if (event.getStart().getDate() != null) {
+                            startsAt = event.getStart()
+                                    .getDate()
+                                    .toString();
+                        }
+                    }
+
+                    return new InterviewResponse(
+                            event.getId(),
+                            event.getSummary(),
+                            "",
+                            "",
+                            startsAt,
+                            event.getDescription(),
+                            event.getHtmlLink(),
+                            "Google Calendar",
+                            false
+                    );
+                })
+                .toList();
+
+        return ResponseEntity.ok(response);
     }
 
     private AppUser currentUser(OAuth2User principal) {

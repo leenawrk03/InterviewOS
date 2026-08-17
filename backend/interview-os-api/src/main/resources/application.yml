@@ -33,8 +33,8 @@ spring:
             redirect-uri: "{baseUrl}/login/oauth2/code/{registrationId}"
 
   mail:
-    host: ${SMTP_HOST:smtp.gmail.com}
-    port: ${SMTP_PORT:587}
+    host: smtp.gmail.com
+    port: 587
     username: ${SMTP_USERNAME}
     password: ${SMTP_PASSWORD}
     properties:
@@ -55,7 +55,17 @@ app:
   mail:
     from: ${MAIL_FROM:}
     enabled: ${MAIL_ENABLED:true}
+  ai:
+    provider: gemini            # gemini | huggingface | openrouter (later)
+    enabled: ${AI_ENABLED:true}
+    gemini:
+      api-key: ${GEMINI_API_KEY}
+      model: ${GEMINI_MODEL:gemini-3.5-flash}
+      base-url: https://generativelanguage.googleapis.com/v1beta
+      timeout-seconds: 60
 
 logging:
   level:
     org.springframework.security: INFO
+
+

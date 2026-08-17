@@ -1,11 +1,16 @@
 import { Component, Input } from '@angular/core';
 import { DatePipe } from '@angular/common';
 import { Interview } from '../../shared/models/interview.model';
+import { InterviewPrep } from '../../shared/models/interview-prep.model';
+import { InterviewPrepComponent } from './interview-prep.component';
+
+
+
 
 @Component({
   selector: 'app-upcoming-interviews',
   standalone: true,
-  imports: [DatePipe],
+  imports: [DatePipe, InterviewPrepComponent],   // 2) add the prep component
   template: `
     <section class="wrap">
 
@@ -17,7 +22,7 @@ import { Interview } from '../../shared/models/interview.model';
         Upcoming interviews
       </h2>
 
-      @if (items.length === 0) {
+      @if (interviews.length === 0) {
 
         <div class="empty">
           <div class="empty-icon">
@@ -38,7 +43,7 @@ import { Interview } from '../../shared/models/interview.model';
 
         <div class="list">
 
-          @for (it of items; track it.id) {
+          @for (it of interviews; track it.id) {
 
             <article class="interview-card">
 
@@ -46,10 +51,14 @@ import { Interview } from '../../shared/models/interview.model';
 
                 <div>
                   @if (it.title) {
+                  
                     <h3>
                       {{ it.title }}
                     </h3>
                   }
+                  <app-interview-prep
+                    [eventId]="it.id"
+                    [existing]="prepByEvent[it.id] ?? null" />
                 </div>
 
                 @if (it.startTime) {
@@ -241,9 +250,10 @@ import { Interview } from '../../shared/models/interview.model';
 
   `]
 })
+// 4) class body
 export class UpcomingInterviewsComponent {
 
-  @Input()
-  items: Interview[] = [];
+  @Input() interviews: Interview[] = [];
 
+  @Input() prepByEvent: Record<string, InterviewPrep> = {};
 }

@@ -57,7 +57,8 @@ public class SecurityConfig {
 
                                 .requestMatchers(
                                         "/api/auth/me",
-                                        "/api/auth/logout"
+                                        "/api/auth/logout",
+                                        "/api/interviews/prep/ping"
                                 ).permitAll()
 
                                 .anyRequest().authenticated()

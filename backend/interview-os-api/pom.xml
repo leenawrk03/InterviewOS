@@ -71,6 +71,12 @@
           <artifactId>google-auth-library-oauth2-http</artifactId>
           <version>1.30.0</version>
       </dependency>
+      <!-- inside <dependencies> -->
+      <dependency>
+          <groupId>com.fasterxml.jackson.datatype</groupId>
+          <artifactId>jackson-datatype-jsr310</artifactId>
+      </dependency>
+
 
   </dependencies>
 
