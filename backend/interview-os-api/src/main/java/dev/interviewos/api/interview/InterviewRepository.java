@@ -8,6 +8,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 public interface InterviewRepository extends JpaRepository<Interview, UUID> {
 
     List<Interview> findByUserIdAndStartsAtAfterOrderByStartsAtAsc(UUID userId, Instant from);
-
     List<Interview> findByUserIdAndStartsAtBetween(UUID userId, Instant from, Instant to);
 }

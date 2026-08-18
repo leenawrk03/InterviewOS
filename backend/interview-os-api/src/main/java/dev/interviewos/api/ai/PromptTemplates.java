@@ -15,8 +15,8 @@ public final class PromptTemplates {
         Rules:
         - Reply with a SINGLE JSON object and nothing else. No markdown fences.
         - topics[].priority must be exactly one of: HIGH, MEDIUM, LOW.
-        - Give 4-8 topics, 6-10 questions, 3-6 preparation steps,
-          1-2 resources, 3-5 last-minute tips.
+        - Give 4-8 topics, 3-6 preparation steps,
+          4-5 resources, 3-5 last-minute tips.
         - resources: prefer well-known, long-lived canonical sources
           (official docs, a widely known book or course). Never invent a URL
           you are not confident exists. Always set "urlVerified": false.
@@ -27,8 +27,7 @@ public final class PromptTemplates {
         {
           "summary": string,
           "topics": [{"name": string, "priority": "HIGH|MEDIUM|LOW", "why": string}],
-          "questions": [{"question": string, "category": string, "answerHint": string}],
-          "preparationPlan": [{"order": number, "title": string, "detail": string, "estimatedMinutes": number}],
+           "preparationPlan": [{"order": number, "title": string, "detail": string, "estimatedMinutes": number}],
           "resources": [{"title": string, "url": string, "type": string, "why": string, "urlVerified": false}],
           "lastMinuteTips": [string]
         }

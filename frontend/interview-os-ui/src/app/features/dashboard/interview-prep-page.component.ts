@@ -84,18 +84,7 @@ import { InterviewPrep } from '../../shared/models/interview-prep.model';
             </ol>
           </section>
 
-          <section class="block">
-            <h2>❓ Possible questions</h2>
-            @for (q of prep()!.analysis.questions; track q.question) {
-              <div class="card">
-                <div class="card-top">
-                  <strong>{{ q.question }}</strong>
-                  <span class="pill">{{ q.category }}</span>
-                </div>
-                <p class="muted">{{ q.answerHint }}</p>
-              </div>
-            }
-          </section>
+      
 
           <section class="block">
             <h2>🔗 Recommended resources</h2>

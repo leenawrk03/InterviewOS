@@ -72,7 +72,7 @@ export class DashboardComponent {
     return [
       { label: 'Upcoming', value: s.upcoming },
       { label: 'This Week', value: s.thisWeek },
-      { label: 'Prepared', value: s.prepared },
+      { label: 'Total Interviews', value: s.prepared },
     ];
   }
 

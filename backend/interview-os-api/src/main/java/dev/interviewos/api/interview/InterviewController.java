@@ -1,5 +1,7 @@
 package dev.interviewos.api.interview;
 
+import com.google.api.services.calendar.model.Event;
+import dev.interviewos.api.ai.InterviewAnalysisRepository;
 import dev.interviewos.api.calendar.CalendarInterviewResponse;
 import dev.interviewos.api.calendar.GoogleCalendarService;
 import dev.interviewos.api.user.AppUser;
@@ -27,14 +29,19 @@ public class InterviewController {
 
     private final GoogleCalendarService calendarService;
     private final UserService users;
+    private final InterviewAnalysisRepository analysisRepository;
 
     public InterviewController(
             GoogleCalendarService calendarService,
-            UserService users) {
+            UserService users,
+            InterviewAnalysisRepository analysisRepository) {
 
         this.calendarService = calendarService;
         this.users = users;
+        this.analysisRepository = analysisRepository;
     }
+
+
 
     @GetMapping("/upcoming")
     public ResponseEntity<List<InterviewResponse>> upcoming(
@@ -101,4 +108,52 @@ public class InterviewController {
                         )
                 );
     }
+
+    @GetMapping("/stats")
+    public ResponseEntity<InterviewDtos.DashboardStats> stats(
+            @AuthenticationPrincipal OAuth2User principal) throws Exception {
+
+        AppUser user = currentUser(principal);
+
+        Events events = calendarService.getUpcomingEvents(user);
+
+        long upcoming = events.getItems().size();
+
+        Instant now = Instant.now();
+
+        Instant startOfWeek = now.minusSeconds(
+                7 * 24 * 60 * 60
+        );
+
+        Instant endOfWeek = now.plusSeconds(
+                7 * 24 * 60 * 60
+        );
+
+        long thisWeek = events.getItems()
+                .stream()
+                .filter(event -> event.getStart() != null)
+                .filter(event -> event.getStart().getDateTime() != null)
+                .filter(event -> {
+                    long time = event.getStart()
+                            .getDateTime()
+                            .getValue();
+
+                    Instant eventTime = Instant.ofEpochMilli(time);
+
+                    return !eventTime.isBefore(startOfWeek)
+                            && !eventTime.isAfter(endOfWeek);
+                })
+                .count();
+        long prepared = analysisRepository.countByUserId(user.getId());
+        return ResponseEntity.ok(
+                new InterviewDtos.DashboardStats(
+                        upcoming,
+                        thisWeek,
+                        prepared
+                )
+        );
+    }
+
+
+
 }

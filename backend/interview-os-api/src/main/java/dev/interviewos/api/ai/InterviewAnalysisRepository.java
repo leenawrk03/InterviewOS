@@ -10,6 +10,6 @@ public interface InterviewAnalysisRepository
         extends JpaRepository<InterviewAnalysisEntity, UUID> {
 
     Optional<InterviewAnalysisEntity> findByUserIdAndEventId(UUID userId, String eventId);
-
+    long countByUserId(UUID userId);
     List<InterviewAnalysisEntity> findAllByUserIdAndEventIdIn(UUID userId, List<String> eventIds);
 }
