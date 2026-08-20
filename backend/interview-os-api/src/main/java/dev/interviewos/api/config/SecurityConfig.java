@@ -61,7 +61,15 @@ public class SecurityConfig {
                                         "/api/interviews/prep/ping"
                                 ).permitAll()
 
-                                .anyRequest().authenticated()
+                                .requestMatchers("/api/**").authenticated()
+
+                                /*
+                                 * The Angular shell and its bundles. Serving
+                                 * them anonymously is what lets the SPA boot
+                                 * and render its own login screen; the router
+                                 * guards decide what the user may see.
+                                 */
+                                .anyRequest().permitAll()
                 )
 
                 .oauth2Login(oauth ->

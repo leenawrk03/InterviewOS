@@ -15,23 +15,49 @@
             "outputPath": "dist/interview-os-ui",
             "index": "src/index.html",
             "browser": "src/main.ts",
-            "polyfills": ["zone.js"],
+            "polyfills": [
+              "zone.js"
+            ],
             "tsConfig": "tsconfig.app.json",
-            "assets": [{ "glob": "**/*", "input": "public" }],
-            "styles": ["src/styles.css"]
+            "assets": [
+              {
+                "glob": "**/*",
+                "input": "public"
+              }
+            ],
+            "styles": [
+              "src/styles.css"
+            ]
           },
           "configurations": {
-            "production": { "outputHashing": "all" },
-            "development": { "optimization": false, "sourceMap": true }
+            "production": {
+              "outputHashing": "all",
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.prod.ts"
+                }
+              ]
+            },
+            "development": {
+              "optimization": false,
+              "sourceMap": true
+            }
           },
           "defaultConfiguration": "production"
         },
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
-          "options": { "port": 4200 },
+          "options": {
+            "port": 4200
+          },
           "configurations": {
-            "production": { "buildTarget": "interview-os-ui:build:production" },
-            "development": { "buildTarget": "interview-os-ui:build:development" }
+            "production": {
+              "buildTarget": "interview-os-ui:build:production"
+            },
+            "development": {
+              "buildTarget": "interview-os-ui:build:development"
+            }
           },
           "defaultConfiguration": "development"
         }

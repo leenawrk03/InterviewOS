@@ -1,0 +1,12 @@
+**/node_modules
+**/dist
+**/target
+**/.angular
+.git
+.idea
+.vscode
+.omc
+**/.env
+**/.env.*
+**/application-local.yml
+**/application-local.properties
