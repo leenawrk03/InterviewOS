@@ -21,6 +21,12 @@ public class InterviewPrepController {
         this.userService = userService;
     }
 
+    /** Health check target for Render; must accept GET with no auth. */
+    @GetMapping("/prep/ping")
+    public ResponseEntity<Void> ping() {
+        return ResponseEntity.ok().build();
+    }
+
     @PostMapping("/prep/{eventId}")
     public ResponseEntity<InterviewPrepResponse> generatePrep(
             @PathVariable String eventId,
