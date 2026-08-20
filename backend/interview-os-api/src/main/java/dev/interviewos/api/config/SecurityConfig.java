@@ -5,6 +5,8 @@ import dev.interviewos.api.auth.RedirectUriMemoFilter;
 
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpStatus;
@@ -21,6 +23,8 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
+
+    private static final Logger log = LoggerFactory.getLogger(SecurityConfig.class);
 
     private final FrontendProperties frontend;
     private final OAuth2LoginSuccessHandler successHandler;
@@ -76,11 +80,13 @@ public class SecurityConfig {
                         oauth
                                 .successHandler(successHandler)
 
-                                .failureHandler((req, res, ex) ->
+                                .failureHandler((req, res, ex) -> {
+                                        log.warn("OAuth2 login failed", ex);
                                         res.sendRedirect(
                                                 frontend.baseUrl()
                                                         + "/?error=oauth"
-                                        ))
+                                        );
+                                        })
                 )
 
                 .logout(logout ->
