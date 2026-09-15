@@ -1,74 +1,180 @@
-# InterviewOS — Phase 1
+# InterviewOS — AI-Powered Interview Intelligence Dashboard
 
+InterviewOS is an AI-powered interview preparation and management platform designed to help candidates organize upcoming interviews, track preparation progress, and improve their interview performance through intelligent insights.
+
+It combines interview scheduling, automated preparation workflows, and AI-driven analysis into one interactive dashboard.
+
+## 🚀 Key Features
+
+* **Interview Dashboard:** View and manage upcoming interviews in one place.
+* **Google Calendar Integration:** Fetch upcoming interview events directly from Google Calendar.
+* **Interview Preparation:** Organize preparation activities based on interview dates and roles.
+* **AI-Powered Insights:** Generate personalized preparation recommendations and identify areas for improvement.
+* **Interactive UI:** Display interviews and preparation information through intuitive dashboard components.
+* **Backend API:** Manage interview-related data and application logic through RESTful APIs.
+
+## 🏗️ System Architecture
+
+```text
+                    ┌────────────────────┐
+                    │    Angular UI      │
+                    │  Interview Dashboard│
+                    └─────────┬──────────┘
+                              │
+                              ▼
+                    ┌────────────────────┐
+                    │   Spring Boot API  │
+                    │  Business Logic    │
+                    └─────────┬──────────┘
+                              │
+               ┌──────────────┼──────────────┐
+               ▼              ▼              ▼
+       ┌────────────┐ ┌──────────────┐ ┌──────────────┐
+       │ Interview  │ │ Google       │ │ AI Interview │
+       │ Management │ │ Calendar API │ │ Intelligence  │
+       └────────────┘ └──────────────┘ └──────────────┘
+               │              │              │
+               ▼              ▼              ▼
+       ┌────────────┐ ┌──────────────┐ ┌──────────────┐
+       │ Database   │ │ OAuth 2.0    │ │ LLM Service  │
+       └────────────┘ └──────────────┘ └──────────────┘
 ```
-Angular  ──login──▶  Spring Boot  ──OAuth 2.0──▶  Google
-                          │
-                          ▼
-                     Spring Boot  ──▶  Angular Dashboard
+
+## 🛠️ Tech Stack
+
+### Frontend
+
+* Angular
+* TypeScript
+* HTML5
+* CSS3
+
+### Backend
+
+* Java
+* Spring Boot
+* Spring MVC
+* RESTful APIs
+* Maven
+
+### Database
+
+* MySQL / PostgreSQL
+
+### Integrations & AI
+
+* Google Calendar API
+* OAuth 2.0
+* Large Language Model (LLM) integration
+
+## 🔄 Application Workflow
+
+1. User opens the InterviewOS dashboard.
+2. User connects their Google Calendar account through OAuth 2.0.
+3. The backend retrieves upcoming calendar events.
+4. Interview-related events are displayed in the Angular dashboard.
+5. The user reviews interview details and prepares using AI-powered recommendations.
+6. The system helps track preparation activities and interview readiness.
+
+## 📁 Project Structure
+
+```text
+InterviewOS/
+│
+├── frontend/
+│   └── interviewos-ui/
+│       ├── src/
+│       ├── angular.json
+│       └── package.json
+│
+├── backend/
+│   └── interviewos-api/
+│       ├── src/
+│       │   ├── main/
+│       │   └── test/
+│       └── pom.xml
+│
+└── README.md
 ```
 
-Google sign-in is owned entirely by **Spring Boot** (`spring-boot-starter-oauth2-client`
-+ Spring Security). Angular only redirects to the API and then reads
-`GET /api/auth/me` with the session cookie. No Supabase anywhere.
+## ⚙️ Getting Started
 
-## Stack
+### Prerequisites
 
-| Layer     | Tech |
-| --------- | ---- |
-| Frontend  | Angular 18 (standalone components + signals), TypeScript |
-| Backend   | Java 21, Spring Boot 3.3, Spring Security OAuth 2.0 |
-| Database  | PostgreSQL 15+ (JPA/Hibernate) |
-| Build     | npm / Maven |
+* Java 17+
+* Maven
+* Node.js and npm
+* Angular CLI
+* Google Cloud project with Google Calendar API enabled
 
-## Layout
+### 1. Clone the Repository
 
-```
-interview-os/
-├── frontend/interview-os-ui/
-│   └── src/app/
-│       ├── core/{auth,guards,interceptors,services}
-│       ├── features/{login,dashboard}
-│       ├── shared/{components,models}
-│       ├── app.routes.ts
-│       └── app.config.ts
-└── backend/interview-os-api/
-    ├── pom.xml
-    └── src/main/java/dev/interviewos/api/
-        ├── auth/       (success handler, /api/auth/me, redirect memo filter)
-        ├── config/     (SecurityConfig, CORS, frontend properties)
-        ├── interview/  (entity, repository, service, controller)
-        └── user/       (AppUser upserted from the Google profile)
+```bash
+git clone https://github.com/your-username/interviewos.git
+cd interviewos
 ```
 
-## Run it
+### 2. Configure the Backend
 
-1. **Backend** — see `backend/interview-os-api/README.md` for Google Console and
-   PostgreSQL setup, then:
-   ```sh
-   cd backend/interview-os-api
-   export GOOGLE_CLIENT_ID=… GOOGLE_CLIENT_SECRET=…
-   mvn spring-boot:run          # :8080
-   ```
-2. **Frontend**
-   ```sh
-   cd frontend/interview-os-ui
-   npm install
-   npm start                    # :4200
-   ```
-3. Open `http://localhost:4200` → *Continue with Google* → Google consent →
-   back on `/dashboard` signed in.
+Update the application configuration with your database credentials and Google OAuth 2.0 settings.
 
-`frontend/interview-os-ui/src/environments/environment.ts` holds the single knob
-(`apiBaseUrl`, default `http://localhost:8080`).
+Example:
 
-## Flow in code
+```properties
+spring.datasource.url=jdbc:mysql://localhost:3306/interviewos
+spring.datasource.username=your_username
+spring.datasource.password=your_password
 
-| Step | Where |
-| ---- | ----- |
-| Button click | `features/login/login.component.ts` |
-| Redirect to API | `core/auth/auth.service.ts` → `/oauth2/authorization/google?redirect_uri=…` |
-| Google exchange | Spring Security `oauth2Login()` in `config/SecurityConfig.java` |
-| Profile upsert + return redirect | `auth/OAuth2LoginSuccessHandler.java` |
-| Session read | `auth/AuthController.java` ⇄ `core/auth/auth.service.ts` |
-| Route protection | `core/guards/auth.guard.ts`, `guest.guard.ts` |
-| Cookie on every call | `core/interceptors/auth.interceptor.ts` (`withCredentials`) |
+google.client-id=your_client_id
+google.client-secret=your_client_secret
+```
+
+Use environment variables or a secure secrets manager for production credentials.
+
+### 3. Run the Backend
+
+```bash
+cd backend/interviewos-api
+mvn spring-boot:run
+```
+
+### 4. Run the Frontend
+
+```bash
+cd frontend/interviewos-ui
+npm install
+ng serve
+```
+
+Open the application at:
+
+```text
+http://localhost:4200
+```
+
+## 🔐 Security
+
+* OAuth 2.0 is used for Google Calendar authorization.
+* API credentials and secrets should be stored securely.
+* Access tokens should not be committed to version control.
+* Environment-specific configuration should be managed separately.
+
+## 🔮 Future Enhancements
+
+* AI-generated technical and behavioral interview questions.
+* Resume-based interview preparation.
+* Automated mock interviews with voice interaction.
+* Interview performance analytics.
+* Personalized study plans based on upcoming interviews.
+* Email reminders and preparation notifications.
+* Job description analysis and skill-gap detection.
+
+## 🎯 Project Objective
+
+InterviewOS aims to simplify interview preparation by bringing scheduling, organization, and AI-powered career intelligence into a single platform.
+
+It is designed as a practical full-stack application demonstrating Java backend development, Angular frontend development, third-party API integration, OAuth 2.0, and GenAI-based feature development.
+
+## 📄 License
+
+This project is intended for educational and portfolio purposes.
